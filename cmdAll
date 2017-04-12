@@ -1,0 +1,564 @@
+    1  passwd
+    2  vi /home/ec2-user/my.py 
+    3  cd /home/ec2-user/
+    4  python my.py 
+    5  yum install wget
+    6  wget https://bootstrap.pypa.io/get-pip.py
+    7  ll
+    8  python get-pip.py 
+    9  pip install paramiko
+   10  pip install check_disk
+   11  pip install check-disk
+   12  python my.py 
+   13  pip install check_disk
+   14  python my.py 
+   15  vi my.py 
+   16  vi my.py 
+   17  pip install cryptography
+   18  yum install gcc libffi-devel python-devel openssl-devel
+   19  pip install cryptography
+   20  pip install paramiko
+   21  python my.py 
+   22  vi my.py 
+   23  python my.py 
+   24  vi my.py 
+   25  vi /etc/ssh/sshd_config 
+   26  service ssh restart
+   27  ssh root@localhost
+   28  python my.py 
+   29  service sshd restart
+   30  python my.py 
+   31  vi /etc/ssh/sshd_config 
+   32  service sshd restart
+   33  python my.py 
+   34  exit
+   35  exit
+   36  ll
+   37  cd 
+   38  cd /home/ec2-user/
+   39  ll
+   40  python google.py 
+   41  vi google.py 
+   42  exit
+   43  su root
+   44  cd 
+   45  exit
+   46  passwd
+   47  ll
+   48  cd /home/ec2-user/
+   49  python google.py 
+   50  vi google.py 
+   51  python google.py 
+   52  ll
+   53  less /home/index.html 
+   54  cd /home/
+   55  python -m SimpleHTTPServer
+   56  cd 
+   57  pwd
+   58  fab --list
+   59  exit
+   60  cd /home/ec2-user/
+   61  vi .ssh/config
+   62  vi fabfile.py
+   63  cd 
+   64  pwd
+   65  vi ~/.ssh/config
+   66  ls- ltr
+   67  ls -ltr
+   68  ls -ltra
+   69  vi ~/.ssh/config
+   70  vi /home/ec2-user/fabfile.py
+   71  vi .ssh/config 
+   72  fab /home/ec2-user/fabfile.py
+   73  cd /home/ec2-user/
+   74  ll
+   75  cp fabfile.py ~
+   76  cd 
+   77  ll
+   78  fab fabfile.py 
+   79  fab deploy
+   80  fab production deploy
+   81  vi .ssh/config 
+   82  ssh-keygen 
+   83  ssh-keygen -t rsa
+   84  ssh root@172.31.9.12 mkdir -p .ssh
+   85  ssh root@172.31.9.12
+   86  ssh root@172.31.9.12 mkdir -p .ssh
+   87  cat .ssh/id_rsa.pub | ssh root@172.31.38.86 'cat >> .ssh/authorized_keys'
+   88  cat .ssh/id_rsa.pub | ssh root@172.31.9.12 'cat >> .ssh/authorized_keys'
+   89  ssh root@172.31.9.12 "chmod 700 .ssh; chmod 640 .ssh/authorized_keys"
+   90  ssh root@172.31.9.12
+   91  fab production deploy
+   92  vi .ssh/config 
+   93  cd .ssh/
+   94  ll
+   95  exit
+   96  yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+   97  yum install ansible
+   98  ansible
+   99  vi /etc/ansible/hosts 
+  100  ansible localhost -m ping
+  101  ansible 172.31.9.12 -m ping
+  102  ansible 172.31.9.121 -m ping
+  103  ansible all -m ping
+  104  ansible all -m ping -p 22
+  105  ansible all --ask-pass -m ping
+  106  ansible all --ask-pass -m ping --remote-port 22
+  107  ansible all --ask-pass -m ping --remoteport 22
+  108  git
+  109  ansible all --sudo --ask-sudo-pass -m raw -a 'sudo yum update -y'
+  110  ansible all --sudo -m raw -a 'sudo yum update -y'
+  111  ansible all --ask-pass -m raw -a 'sudo yum update -y' -vvv
+  112  ansible all --ask-pass -m raw -a 'echo $HOME' -vvv
+  113  ansible all --ask-pass -m raw -a 'echo $TERM' -vvv
+  114  ansible all -m raw -a 'whoami' -vvv
+  115  ansible all -m raw -a 'ifconfig' -vvv
+  116  ll
+  117  mkdir ansible
+  118  cd ansible/
+  119  ll
+  120  vi conditiondemo
+  121  mv conditiondemo conditiondemo.yaml
+  122  vi conditiondemo.yaml 
+  123  ll
+  124  vi conditiondemo.yaml 
+  125  ansible -playbook conditiondemo.yaml 
+  126  ansible --playbook conditiondemo.yaml 
+  127  ansible all --playbook conditiondemo.yaml 
+  128  ansible-playbook conditiondemo.yaml 
+  129  ansible-playbook conditiondemo.yaml -vvv
+  130  ll
+  131  ls -latr
+  132  vi delegate.yaml
+  133  vi delegate.yaml 
+  134  ansible-playbook delegate.yaml 
+  135  vi delegate.yaml 
+  136  vi /etc/ansible/ansible.cfg 
+  137  ls -ltr ~/.ansible/tmp/
+  138  ll
+  139  vi nginx.yaml
+  140  vi index.html.j2
+  141  ansible-playbook nginx.yaml 
+  142  vi index.html.j2 
+  143  vi nginx.yaml
+  144  ansible-playbook nginx.yaml 
+  145  ansible-playbook nginx.yaml -vvv
+  146  ansible-playbook nginx.yaml -vvv | tee 1.log
+  147  vi index.html.j2 
+  148  ansible-playbook nginx.yaml -vvv | tee 2.log
+  149  ll
+  150  diff 1.log 2.log 
+  151  vi aws-ec2
+  152  vi aws-ec2.yaml
+  153  ansible-playbook -i inventories/dev -k aws-ec2.yaml --ask-pass
+  154  yum install boto
+  155  ansible-playbook -k aws-ec2.yaml --ask-pass
+  156  yum install boto
+  157  pip install boto
+  158  ansible-playbook -k aws-ec2.yaml --ask-pass
+  159  vi aws-ec2.
+  160  vi aws-ec2.yaml 
+  161  ansible-playbook -k aws-ec2.yaml --ask-pass
+  162  vi aws-ec2.yaml 
+  163  ansible-playbook -k aws-ec2.yaml --ask-pass
+  164  vi aws-ec2.yaml 
+  165  ansible-playbook aws-ec2.yaml -vvv
+  166  cd 
+  167  ll
+  168  cd ansible/
+  169  ll
+  170  vi aws-ec2.yaml 
+  171  history
+  172  ansible-playbook -k aws-ec2.yaml --ask-pass
+  173  passwd
+  174  vi aws-ec2.yaml 
+  175  history
+  176  history | tee ansible.log
+  177  pwd
+  178  ifconfig
+  179  cd 
+  180  cd /opt/
+  181  mkdir -p ansibledemo/firstplaybook/roles
+  182  cd /opt/ansibledemo/firstplaybook/roles/
+  183  ansible-galaxy init tomcat
+  184  ll
+  185  cd tomcat/
+  186  ll
+  187  tree
+  188  yum install tree
+  189  tree
+  190  cd /root/ansible/aws-ec2.
+  191  cd /root/ansible/aws-ec2.yaml 
+  192  less /root/ansible/aws-ec2.yaml 
+  193  cd tasks/
+  194  ll
+  195  vi main.yml 
+  196  ll
+  197  cd ..
+  198  ll
+  199  cd tasks/
+  200  ll
+  201  less main.yml 
+  202  vi main.yml 
+  203  vi create_users.yml
+  204  vi install_packages.yml
+  205  vi configure_tomcat.yml
+  206  ll
+  207  cd ../templates/
+  208  ll
+  209  vi setenv.j2
+  210  pwd
+  211  cd ..
+  212  vi firtspalybook.yml
+  213  ll
+  214  cd roles/
+  215  ll
+  216  cd tomcat/
+  217  ll
+  218  cd templates/
+  219  ll
+  220  vi tomcat.j2
+  221  cd ..
+  222  ll
+  223  cd vars/
+  224  vi main.yml 
+  225  ll
+  226  cd ../tests/
+  227  vi test.yml 
+  228  cd ../
+  229  cd vars/
+  230  vi main.yml 
+  231  ll
+  232  cd ..
+  233  ll
+  234  cd ..
+  235  ll
+  236  cd ..
+  237  ll
+  238  ansible-playbook firtspalybook.yml
+  239  vi /opt/ansibledemo/firstplaybook/firtspalybook.yml 
+  240  ansible-playbook firtspalybook.yml
+  241  vi /opt/ansibledemo/firstplaybook/roles/tomcat/tasks/install_packages.yml 
+  242  ansible-playbook firtspalybook.yml
+  243  vi /opt/ansibledemo/firstplaybook/roles/tomcat/tasks/install_packages.yml 
+  244  ansible-playbook firtspalybook.yml
+  245  vi /etc/ansible/ansible.cfg 
+  246  vi firtspalybook.yml 
+  247  ansible-playbook firtspalybook.yml
+  248  vi roles/tomcat/templates/setenv.j2 
+  249  vi roles/tomcat/templates/tomcat.j2 
+  250  ansible-playbook firtspalybook.yml
+  251  cd roles/tomcat/
+  252  cd tasks/
+  253  vi configure_tomcat.yml 
+  254  cd ..
+  255  ansible-playbook firtspalybook.yml
+  256  vi roles/tomcat/tasks/configure_tomcat.yml 
+  257  vi roles/tomcat/tasks/install_packages.yml 
+  258  ansible-playbook firtspalybook.yml
+  259  ll
+  260  vi roles/tomcat/tasks/configure_tomcat.yml 
+  261  vi roles/tomcat/vars/main.yml 
+  262  lll
+  263  ll
+  264  cd roles/tomcat/
+  265  ll
+  266  cd vars/
+  267  ll
+  268  vi main.yml 
+  269  cd ..
+  270  ll
+  271  cd vars/
+  272  ll
+  273  cd ..
+  274  ll
+  275  cd tasks/
+  276  vi install_packages.yml 
+  277  vi create_users.yml 
+  278  vi configure_tomcat.yml 
+  279  cd ..
+  280  ll
+  281  cd templates/
+  282  ll
+  283  vi setenv.j2 
+  284  cd ..
+  285  vi tasks/configure_tomcat.yml 
+  286  cd templates/
+  287  vi setenv.j2 
+  288  vi tomcat.j2 
+  289  cd ..
+  290  ll
+  291  cd vars/
+  292  ll
+  293  vi main.yml 
+  294  cd ..
+  295  ll
+  296  cd tasks/
+  297  ll
+  298  vi install_packages.yml s
+  299  vi install_packages.yml
+  300  cd ..
+  301  vi vars/main.yml 
+  302  telnet 54.149.126.237 8080
+  303  ll
+  304  cd ansible/
+  305  ll
+  306  vi aws-ec2.yaml 
+  307  pip install boto
+  308  ansible-playbook aws-ec2.yaml -vvv
+  309  vi aws-ec2.yaml 
+  310  ansible-playbook aws-ec2.yaml -vvv
+  311  vi aws-ec2.yaml 
+  312  ansible-playbook aws-ec2.yaml -vvv
+  313  vi aws-ec2.yaml 
+  314  ansible-playbook aws-ec2.yaml -vvv
+  315  vi aws-ec2.yaml 
+  316  cd ..
+  317  cd 
+  318  l
+  319  ll
+  320  cd ansible/
+  321  ll
+  322  cd 
+  323  cd /opt/ansibledemo/firstplaybook/
+  324  vi firtspalybook.yml 
+  325  cd roles/tomcat/
+  326  cd tasks/
+  327  ll
+  328  vi install_packages.yml 
+  329  cd ..
+  330  history
+  331  ansible-playbook firtspalybook.yml
+  332  vi /opt/ansibledemo/firstplaybook/roles/tomcat/tasks/install_packages.yml 
+  333  ansible-playbook firtspalybook.yml
+  334  ifconfig
+  335  passwd
+  336  cd 
+  337  cd /opt/
+  338  mkdir chef
+  339  cp ~/chef-starter.zip chef/
+  340  cd chef/
+  341  ll
+  342  unzip chef-starter.zip 
+  343  yum install unzip
+  344  unzip chef-starter.zip 
+  345  ll
+  346  cd chef-repo/
+  347  ll
+  348  cd cookbooks/
+  349  ll
+  350  cd starter/
+  351  ll
+  352  cd ..
+  353  ll
+  354  cd roles/
+  355  ll
+  356  cat starter.rb 
+  357  cd ..
+  358  ll
+  359  cd cookbooks/
+  360  ll
+  361  cd starter/
+  362  ll
+  363  history
+  364  ll
+  365  cd attributes/
+  366  ll
+  367  less default.rb 
+  368  ll
+  369  cd ..
+  370  ll
+  371  cd files/
+  372  ll
+  373  cd default/
+  374  ll
+  375  less sample.txt 
+  376  curl -L http://www.chef.io/chef/install.sh | sudo bash
+  377  cd /opt/chef/chef-repo/
+  378  knife --version
+  379  ls- ltar
+  380  ll
+  381  ls -latr
+  382  cd .chef/
+  383  ll
+  384  cat userasr.pem 
+  385  cat knife.rb 
+  386  knife help list
+  387  knife client list
+  388  cd ..
+  389  ll
+  390  knife bootstrap 172.31.9.12 --sudo -x root -p password -N "Node1"
+  391  ssh root@172.31.9.12
+  392  knife bootstrap 172.31.9.12 --sudo -x root -p password -N "Node1"
+  393  knife bootstrap 172.31.9.12 --sudo -x root -N "Node1"
+  394  ls- ltr
+  395  ll
+  396  exit
+  397  cd /opt/chef/
+  398  ll
+  399  cd chef-repo/
+  400  ll
+  401  cd cookbooks/
+  402  ll
+  403  cd ..
+  404  ll
+  405  cd roles/
+  406  ll
+  407  cd 
+  408  ll
+  409  cd ansible/
+  410  ll
+  411  cd 
+  412  ll
+  413  history
+  414  cd /opt/chef/chef-
+  415  cd /opt/chef/chef-repo/
+  416  ll
+  417  cd roles/
+  418  ll
+  419  vi starter.rb 
+  420  ll
+  421  cd ..
+  422  ll
+  423  cd cookbooks/
+  424  ll
+  425  less chefignore 
+  426  ll
+  427  cd starter/
+  428  ll
+  429  cd recipes/
+  430  ll
+  431  cd ../templates/
+  432  ll
+  433  cd default/
+  434  ll
+  435  less sample.erb 
+  436  cd 
+  437  cd ansible/
+  438  ll
+  439  less aws-ec2.yaml 
+  440  ls -ltr
+  441  vi nginx.yaml 
+  442  ll
+  443  cd 
+  444  ll
+  445  cd /opt/ansibledemo/
+  446  ll
+  447  cd firstplaybook/
+  448  ll
+  449  cd roles/
+  450  ll
+  451  cd tomcat/
+  452  ll
+  453  cd ..
+  454  ll
+  455  cd ..
+  456  ll
+  457  git status
+  458  cd ..
+  459  ll
+  460  git clone https://github.com/userasr/devops.git
+  461  yum install git
+  462  git clone https://github.com/userasr/devops.git
+  463  ll
+  464  cd devops/
+  465  ll
+  466  mkdir ansible
+  467  cp -r ../firstplaybook ansible/
+  468  ll
+  469  git status
+  470  git add .
+  471  pwd
+  472  cd 
+  473  ll
+  474  cd ansible/
+  475  ll
+  476  cp *yaml index.html.j2 /opt/ansibledemo/devops/ansible/
+  477  cd /opt/ansibledemo/devops/
+  478  ll
+  479  cd ansible/
+  480  ll
+  481  cd ..
+  482  ll
+  483  cd ansible/
+  484  ll
+  485  vi aws-ec2.yaml 
+  486  vi nginx.yaml 
+  487  cd ..
+  488  git add .
+  489  git commit -m "Committing ansible playbooks examples"
+  490  git status
+  491  git log
+  492  git push origin master
+  493  git log
+  494  git rebase -i ab9dd5944acc59e816e63b7a6b44d988ba22ba1d
+  495  git rebase -i 61ea7381baeb08bf5e1a38a5d74fc4ae4e0f7608
+  496  git log
+  497  ls -ltr
+  498  cd ansible/
+  499  ll
+  500  cd ..
+  501  ll
+  502  git reset --soft HEAD~3 &&
+  503  git reset --soft HEAD~3 && git commit
+  504  git reset --soft HEAD~2 && git commit
+  505  gitl og
+  506  git log
+  507  git reset --soft HEAD~1 && git commit
+  508  git log
+  509  ll
+  510  git status
+  511  git fetch
+  512  git log
+  513  q!
+  514  ll
+  515  cd ..
+  516  ll
+  517  mv devops devops1
+  518  git clone https://github.com/userasr/devops.git
+  519  cd devops
+  520  ll
+  521  cd ..
+  522  ll
+  523  cd devops1/
+  524  ll
+  525  mv Devops-Sample-Resume.zip ../devops
+  526  mv Final_PPT.zip ../devops
+  527  mv Jenkins-Ansible-Project.docx ../devops
+  528  cd ..
+  529  ll
+  530  cd devops
+  531  ll
+  532  git status
+  533  git add .
+  534  git commit -m "Added all available documents"
+  535  git status
+  536  git log
+  537  mv ../devops1/ansible .
+  538  ll
+  539  git status
+  540  cd ansible/
+  541  ll
+  542  git status
+  543  cd ..
+  544  ll
+  545  git add .
+  546  git commit -m "Added Ansible playbooks and examples"
+  547  git status
+  548  git push origin master
+  549  cd ..
+  550  ll
+  551  rm -rf devops1/
+  552  ll
+  553  cd ..
+  554  ll
+  555  cd google/
+  556  ll
+  557  cd ..
+  558  ll
+  559  cd 
+  560  ll
+  561  vi fabfile.py
+  562  ll
+  563  history
+  564  history | tee cmdAll
