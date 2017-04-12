@@ -1,0 +1,373 @@
+- hosts: all
+
+  vars: 
+   - MyMessage: "Welcome to Ansible world!"
+   - DBMessage: "Hello from MongoDB"
+
+  tasks:
+   - name: Install EPEL release for nginx
+     yum: name=http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm state=present
+   - name: Nginx setup
+     yum: name=nginx state=installed update_cache=true
+   - name: index.html copy
+     template: src=index.html.j2 dest=/usr/share/nginx/html/index.html
+   - name: starting nginx
+     service: name=nginx state=started
+
+   
+   
+<html>
+<body>
+
+<h1>Ansible Demo</h1>
+<p>{{MyMessage}}</p>
+<p>{{DBMessage}}</p>
+
+</body>
+</html>
+
+
+----Main yml
+# tasks file for tomcat
+- include: create_users.yml
+- include: install_packages.yml
+- include: configure_tomcat.yml
+
+--Create-Users.yml
+- name: Create Tomcat Group
+  group: name=tomcat gid=5000
+
+- name: Create Athoris User
+  user: name=tomcat comment="Tomcat App User" uid=5000  group=5000
+  
+  
+-- install_packages.yml
+- name: "Install Tom]cat prerequisites"
+  yum: name={{ item }} state=latest
+  with_items:
+    - java-1.7.0-openjdk
+    - unzip
+
+- stat: path=/usr/local/apache-tomcat-8.0.21
+  register: tc
+
+- name: "Fetch Tomcat"
+  get_url: url=http://archive.apache.org/dist/tomcat/tomcat-8/v8.0.23/bin/apache-tomcat-8.0.23.zip dest=/tmp mode=0440
+
+- name: "Unpack Tomcat"
+  unarchive: src=/tmp/apache-tomcat-8.0.23.zip dest=/usr/local/ copy=no owner=tomcat group=tomcat
+  when: tc.stat.exists == False
+
+- name: "Remove default apps"
+  file: path={{ item }} state=absent
+  with_items:
+    - /usr/local/apache-tomcat-8.0.23/webapps/docs
+    - /usr/local/apache-tomcat-8.0.23/webapps/examples
+    - /usr/local/apache-tomcat-8.0.23/webapps/host-manager
+    - /usr/local/apache-tomcat-8.0.23/webapps/manager
+    - /usr/local/apache-tomcat-8.0.23/webapps/ROOT
+
+- name: Set execute perms
+  file: path="/usr/local/apache-tomcat-8.0.23/bin/{{ item }}" mode="0770"
+  with_items:
+    - "version.sh"
+    - "tool-wrapper.sh"
+    - "startup.sh"
+    - "setclasspath.sh"
+    - "digest.sh"
+    - "catalina.sh"
+
+---ConfigureTomcat.yml
+
+- name: "deploy setenv.sh"
+  template: src=setenv.j2 dest=/usr/local/apache-tomcat-8.0.23/bin/setenv.sh owner=tomcat group=tomcat
+
+- name: "Deploy startup script"
+  template: src=tomcat.j2 dest=/etc/init.d/tomcat owner=root mode=700
+
+---Sentenv.j2
+export CLASSPATH=\
+$JAVA_HOME/lib/tools.jar:\96
+$CATALINA_HOME/bin/commons-daemon.jar:\
+$CATALINA_HOME/bin/bootstrap.jar
+
+export CATALINA_OPT="{{ tomcat.catalina.opts }}"
+export JAVA_OPTS="{{ tomcat.java.opts }}"
+
+--
+
+---firtspalybook.yml
+  - name: Manage Tomcat
+    hosts: tomcat
+
+    roles:
+          - { role: tomcat, tags: ['tomcat'] }
+          
+          
+---------------var files Main.yml
+---
+# vars file for tomcat
+tomcat:
+    appgroup: tomcat
+    appuser: tomcat
+    gid: 5000
+    uid: 5000
+
+    java:
+        home: '/usr/lib/jvm/java-7-openjdk-amd64/'
+        opts: '
+            -Duser.timezone=UTC
+            -Dfile.encoding=UTF8
+            -Xmx512m
+            -Xms512m
+            '
+    catalina:
+        home: '/usr/local/apache-tomcat-8.0.23/'
+        pid:  '/usr/local/apache-tomcat-8.0.23/temp/tomcat.pid'
+        opts: '-Dcom.sun.management.jmxremote
+               -Dcom.sun.management.jmxremote.port=8082
+               -Dcom.sun.management.jmxremote.authenticate=false
+               -Dcom.sun.management.jmxremote.ssl=false'
+          
+------------------tomcat.j2
+#!/bin/sh
+
+SHUTDOWN_WAIT=30
+
+export APP_USER="{{ tomcat.appuser }}"
+export JAVA_HOME="{{ tomcat.java.home }}"
+export CATALINA_HOME="{{ tomcat.catalina.home }}"
+export CATALINA_PID="{{ tomcat.catalina.pid }}"
+
+SU="su"
+
+start() {
+  isrunning
+
+  if [ "$?" = 0 ]; then
+    echo "Tomcat is already running"
+    return 0
+  fi
+
+  # Change directory to prevent path problems
+  cd $CATALINA_HOME
+
+  # Remove pidfile if still around
+  test -f $CATALINA_PID && rm -f $CATALINA_PID
+
+  $SU $APP_USER -c "umask 0002; $CATALINA_HOME/bin/catalina.sh start" > /dev/null
+}
+
+stop() {
+  isrunning
+
+  if [ "$?" = 1 ]; then
+    echo "Tomcat is already stopped"
+    rm -f $CATALINA_PID # remove pidfile if still around
+    return 0
+  fi
+
+  echo -n "Waiting for Tomcat to exit (${SHUTDOWN_WAIT} sec.): "
+
+  count=0
+  until [ "$pid" = "" ] || [ $count -gt $SHUTDOWN_WAIT ]; do
+    $SU $APP_USER -c "$CATALINA_HOME/bin/catalina.sh stop -force" > /dev/null
+    findpid
+
+    echo -n "."
+    sleep 3
+    count=$((count+3))
+  done
+
+  echo ""
+
+  if [ "$count" -gt "$SHUTDOWN_WAIT" ]; then
+    echo "Forcing Tomcat to stop"
+    /bin/kill -9 $pid && sleep 5
+  fi
+
+  # check if tomcat is still around, this will be our exit status
+  ! isrunning
+}
+
+findpid() {
+  pid=""
+  #pid=$(pgrep -U $APP_USER -f "^$JAVA_HOME/bin/java.*cpatalina.base=$CATALINA_HOME")
+  pid=$(ps -fu $APP_USER | grep "Dcatalina.home=$CATALINA_HOME" | awk {'print $2'})
+
+  # validate output of pgrep
+  if ! [ "$pid" = "" ] && ! [ "$pid" -gt 0 ]; then
+    echo "Unable to determine if Tomcat is running"
+    exit 1
+  fi
+}
+
+isrunning() {
+
+  findpid
+
+  if [ "$pid" = "" ]; then
+    return 1
+  elif [ "$pid" -gt 0 ]; then
+    return 0
+  fi
+}
+
+case "$1" in
+  start)
+    start
+    RETVAL=$?
+
+    if [ "$RETVAL" = 0 ]; then
+      echo "Started Tomcat"
+    else
+      echo "Not able to start Tomcat"
+    fi
+    ;;
+
+  stop)
+    stop
+    RETVAL=$?
+
+    if [ "$RETVAL" = 0 ]; then
+      echo "Stopped Tomcat"
+    else
+      echo "Not able to stop Tomcat"
+    fi
+  ;;
+
+  restart)
+    stop
+    sleep 5
+    start
+    RETVAL=$?
+
+    if [ "$RETVAL" = 0 ]; then
+      echo "Restarted Tomcat"
+    else
+      echo "Not able to restart Tomcat"
+    fi
+  ;;
+
+  status)
+    isrunning
+    RETVAL=$?
+
+    if [ "$RETVAL" = 0 ]; then
+      echo "Tomcat (pid $pid) is running..."
+    else
+      echo "Tomcat is stopped"
+      RETVAL=3
+    fi
+  ;;
+
+  *)
+    echo "Usage: $0 {start|stop|restart|status}."
+  ;;
+
+esac
+
+exit $RETVAL
+
+
+
+--------------------EC2 Parsing logic
+
+---
+- name: Create security group
+  ec2_group:
+    name: "{{ aws_sg_name }}"
+    description: Security group for cassandra
+    vpc_id: "{{ aws_vpc_id }}"
+    region: "{{ aws_region }}"
+  register: result
+
+- name: Print security group id
+  debug: msg="{{ result.group_id }}"
+
+- name: Update security group
+  ec2_group:
+    name: "{{ aws_sg_name }}"
+    description: Security group for cassandra
+    vpc_id: "{{ aws_vpc_id }}"
+    region: "{{ aws_region }}"
+    rules:
+      - proto: tcp
+        from_port: 7001
+        to_port: 7001
+        group_id: "{{ result.group_id }}"
+      - proto: tcp
+        from_port: 9160
+        to_port: 9160
+        group_id: "{{ result.group_id }}"
+      - proto: tcp
+        from_port: 9042
+        to_port: 9042
+        cidr_ip: 0.0.0.0/0
+  register: result
+
+- name: Create cassandra instances
+  ec2:
+    key_name: "{{ key_pair_name }}"
+    instance_type: "{{ aws_instance_type }}"
+    group_id: ['{{ aws_sec_groups }}','{{ result.group_id }}','sg-fe4e1e82']
+    image: "{{ aws_ami_id }}"
+    volumes: "{{ volumes }}"
+    region: "{{ aws_region }}"
+    ebs_optimized: "true"
+    instance_tags:
+      Name: "{{ tag_name }}"
+      ApplicationRole: "{{ tag_app_role }}"
+      BusinessUnit: "{{ tag_business_unit }}"
+      OwnerEmail: "{{ tag_owner_email }}"
+      Project: "{{ tag_project }}"
+    vpc_subnet_id: "{{ item }}"
+  with_items: "{{ aws_subnet_id }}"
+  register: ec2
+
+- set_fact: dns_list="[]"
+
+- name: Construct DNS names
+  set_fact: dns_list="{{dns_list}} + ['cassandra-{{ item }}-{{ var_env }}.{{ aws_hosted_zone }}']"
+  with_sequence: start=1 end="{{ aws_subnet_id|length }}" stride=1
+
+- set_fact: ip_list="[]"
+
+- name: Construct IP list
+  set_fact: ip_list="{{ip_list}} + ['{{ item['instances'][0]['private_ip'] }}']"
+  with_items: "{{ ec2.results }}"
+
+#- name: Write IP addresses to temp file for nagios
+#  lineinfile: dest="../environments/{{ var_env }}/temp.txt" line="{{ item }}"
+#  with_items: "{{ ip_list }}"
+
+- name: Create DNS entries for the nodes in Route 53
+  route53:
+    command: "create"
+    zone: "{{ aws_hosted_zone }}"
+    hosted_zone_id: "{{ aws_hosted_zone_id }}"
+    record: "{{ item.0 }}"
+    type: "A"
+    ttl: "300"
+    overwrite: "yes"
+    value: "{{ item.1 }}"
+  with_together:
+      - "{{ dns_list }}"
+      - "{{ ip_list }}"
+  register: dns_result
+
+- name: Wait for VM to be available for SSH
+  local_action: wait_for port=22 host="{{ item }}" timeout=420 state=started
+  with_items: "{{ ip_list }}"
+
+- name: Add newly created EC2 instances to the inventory file
+  add_host:
+    name: "Cassandra-{{ item | replace('.', '-') }}"
+    groups: cassandra_nodes
+    ansible_user: "{{ aws_vm_user }}"
+    ansible_host: "{{ item }}"
+  with_items: "{{ ip_list }}"
+
+
+          
+

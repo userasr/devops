@@ -1,0 +1,181 @@
+----------------------- AWS Demo
+
+#!/bin/sh
+curl -L https://us-west-2-aws-training.s3.amazonaws.com/awsu-spl/spl03-working-elb/static/bootstrap-elb.sh | sh
+
+yum install wget
+
+yum install unzip
+
+wget https://us-west-2-aws-training.s3.amazonaws.com/awsu-spl/spl03-working-elb/static/examplefiles-elb.zip
+unzip examplefiles-elb.zip
+
+db name
+drupaltutorial
+username
+drupaltutorial
+password
+drupaltutorial
+
+sudo yum update -y
+sudo yum install -y httpd24 php56 mysql55-server php56-mysqlnd php56-mbstring php56-gd php56-opcache
+sudo service httpd start
+sudo chkconfig httpd on
+
+https://www.drupal.org/project/drupal
+
+wget http://ftp.drupal.org/files/projects/drupal-7.54.tar.gz
+tar -xzvf drupal-7.54.tar.gz
+
+cd drupal-7.54/
+mkdir sites/default/files
+
+cp sites/default/default.settings.php sites/default/settings.php
+
+sudo rsync -avh . /var/www/html/
+
+sudo chown -R apache /var/www
+
+sudo vim /etc/httpd/conf/httpd.conf
+
+#!/bin/bash
+yum update -y
+service httpd start
+chkconfig httpd on
+
+----------------------------------Jenkins
+
+1 cd /opt
+2 wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
+3 echo "deb http://pkg.jenkins-ci.org/debian binary/" | sudo tee -a /etc/apt/sources.list.d/jenkins.list
+4 sudo apt-get update
+5 sudo apt-get install jenkins
+6 java -version
+7 service jenkins start
+8 ps -ef |grep jenkins
+
+http://www.bogotobogo.com/DevOps/Jenkins/Jenkins_Adding_Job_and_Build.php
+
+http://www.bogotobogo.com/DevOps/Jenkins/Jenkins_Git_Github.php
+
+http://aws.amazon.com/whitepapers
+
+https://github.com/bogo-devops/game-of-life
+
+39 sudo apt-get remove maven3
+40 sudo apt-get remove maven
+
+41 sudo add-apt-repository "deb http://ppa.launchpad.net/natecarlson/maven3/ubuntu precise main"
+42 sudo apt-get update
+
+43 sudo apt-get install maven3
+44 sudo ln -s /usr/share/maven3/bin/mvn /usr/bin/mvn
+
+export MAVEN_HOME=/usr/share/maven3
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+
+sudo apt-get install openjdk-8-jdk
+
+-------------------------Python
+
+python -m SimpleHTTPServer
+
+https://gist.github.com/jasonkeene/2ac5e552f2ba75d0295b#python-for-system-admins-operators
+
+http://collabedit.com/9v4ph
+
+24 yum install wget
+25 wget https://bootstrap.pypa.io/get-pip.py
+
+yum install gcc libffi-devel python-devel openssl-devel
+
+python get-pip.py
+
+28 pip install requests
+29 pip install paramiko
+31 pip install paramiko
+34 pip install cryptography
+35 pip install paramiko
+101 pip install requests
+139 pip install fabric
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+# This is a Mock project for DevOps class
+
+# Python-Paramiko (Module)
+# SSH client online
+# Python-OS (Module) - create directory
+# This module hits a URL and check the status
+
+import paramiko
+import requests
+
+url = 'http://www.google.com'
+loc='/home/index.html'
+
+def google(url,loc):
+
+r=requests.get(url)
+output = r.content
+print r.status_code
+file=open(loc, 'a')
+o=r.status_code
+for output in r.iter_content():
+if o == 200:
+print "output is -----------", output
+file.write(output)
+else:
+print "Code Faulty"
+return
+
+def clt():
+ssh=paramiko.SSHClient()
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh.connect( 'localhost' , username='root', password='nikhil1989')
+ins, out, err = ssh.exec_command("mkdir /opt/google" )
+
+#e=err.read()
+'''
+if e is not None:
+return "Error"
+
+'''
+g = google(url,loc)
+print g
+cmd = "cat %s
+
+------------------------------------------------------Ansible
+
+yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+yum install ansible
+
+ansible all --sudo --ask-sudo-pass -m raw -a 'sudo yum update -y'
+
+http://docs.ansible.com/ansible/modules.html
+
+ansible all -m shell -a 'echo $TERM' --ask-pass
+
+mkdir -p /opt/ansibletutorial/
+
+vi conditionaldemo.yml
+
+http://collabedit.com/9v4ph
+
+http://collabedit.com/rhg5m
+
+/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.131-2.6.9.0.el7_3.x86_64/jre/
+
+----------------------Chef-----------------------------------------------------------
+
+curl -L http://www.chef.io/chef/install.sh | sudo bash
+
+knife --version
+
+knife client list
+
+knife bootstrap--sudo -x chef -P chef -N "node1"
+
+http://collabedit.com/dk3bg

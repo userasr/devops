@@ -1,0 +1,185 @@
+
+server_list=['localhost']
+mount_point = '/dev/xvda2'
+threashold = 90
+
+def check_disk(server,mount_point):
+        s = paramiko.SSHClient()
+        s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        s.connect('localhost', username='root', password='ethans@devops',
+                allow_agent=False,look_for_keys=False)
+        err,out,ins = s.exec_command("df -h")
+        ss=out.read()
+        #print ss
+        for line in ss.split('\n'):
+                #print(line.split()[0])
+                if len(line.split()) > 0:
+                        if line.split()[0] == mount_point:
+                                #print(line.split()[0])
+                                #print(line.split()[4])
+                                return int(line.split()[4].rstrip('%'))
+
+for server in server_list:
+        print(server)
+        disk_usage=check_disk(server,mount_point)
+        print disk_usage
+        if disk_usage > threashold:
+                print('Sending email')
+        else:
+                print('All is well')
+                
+                
+                
+                
+ # This is a Mock project for DevOps class
+
+# Python-Paramiko (Module)
+# SSH client online
+# Python-OS (Module)    - create directory
+#   
+
+
+import paramiko
+import requests
+
+
+url = 'http://www.google.com'
+loc='/home/index.html'
+
+def google(url,loc):
+    
+    r=requests.get(url)
+    output = r.content
+    #print r.status_code
+    file=open(loc, 'wb')
+    o=r.status_code
+    for output in r.iter_content():
+        if o == 200:
+            file.write(output)
+        else:
+            print "Code Faulty"
+            return
+
+
+
+def clt():
+    ssh=paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect( 'localhost' , username='root', password='pass@123')
+    ins, out, err = ssh.exec_command("mkdir /opt/google" )
+    
+    #e=err.read()
+    '''
+    if e is not None:
+        return "Error"
+    '''
+    g = google(url,loc)
+    cmd = "cat %s << EOD" % g
+    ssh.exe_command(cmd)
+    ssh.exec_command("cd /opt/google; wget google.com")
+    
+clt()
+
+
+
+- hosts: all 
+  tasks: 
+  - name: Print the ansible_os_family value 
+    debug: 
+      msg: '{{ ansible_os_family }}' 
+  - name: Ensure the httpd package is updated 
+    yum: 
+      name: httpd 
+      state: latest 
+    become: True   
+    when: ansible_os_family == 'RedHat' 
+  - name: Ensure the apache2 package is updated 
+    apt: 
+      name: apache2 
+      state: latest 
+    become: True 
+    when: ansible_os_family == 'Debian' 
+
+
+- hosts: all 
+  tasks: 
+  - name: Count processes running on the remote system 
+    shell: ps | wc -l 
+    register: remote_processes_number 
+  - name: Print remote running processes 
+    debug: 
+      msg: '{{ remote_processes_number.stdout }}' 
+  - name: Count processes running on the local system 
+    shell: ps | wc -l 
+    delegate_to: localhost 
+    register: local_processes_number 
+  - name: Print local running processes 
+    debug: 
+      msg: '{{ local_processes_number.stdout }}' 
+      
+-- nginx play book
+- hosts: all
+
+  vars: 
+   - MyMessage: "Welcome to Ansible world!"
+   - DBMessage: "Hello from MongoDB"
+
+  tasks:
+   - name: NGINX | Installing NGINX repo rpm
+     yum: name=http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+   - name: NGINX | Installing NGINX
+     yum: name=nginx state=latest
+   - name: index.html copy
+     template: src=index.html.j2 dest=/usr/share/nginx/html/index.html
+   - name: NGINX | Starting NGINX
+     service: name=nginx state=started
+
+----------------Index html
+<html>    
+<body>
+
+<h1>Ansible Demo</h1>
+<p>{{MyMessage}}</p>
+<p>{{DBMessage}}</p>
+
+</body>
+</html>
+
+
+- name: Create a new Demo EC2 instance
+  hosts: localhost
+  gather_facts: False
+
+  vars:
+      region: ap-south-1
+      instance_type: t2.micro
+      ami: ami-cdbdd7a2  # Redhat
+      keypair: REDHAT # pem file name
+
+  tasks:
+
+    - name: Create an ec2 instance
+      ec2:
+         key_name: "{{ keypair }}"
+         aws_access_key: "AKIAIKVTZR7CFZC4VTGA"
+         aws_secret_key: "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"
+         group: REDHAT  # security group name
+         instance_type: "{{ instance_type}}"
+         image: "{{ ami }}"
+         wait: true
+         region: "{{ region }}"
+         count: 1  # default
+         count_tag:
+            Name: "Demo"
+         instance_tags:
+            Name: "Demo"
+         vpc_subnet_id: "subnet-6dcf5a04"
+         assign_public_ip: yes
+      register: ec2
+
+
+          
+ansible-playbook -k first_playbook.yml --ask-pass
+
+
+
