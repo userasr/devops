@@ -1,0 +1,443 @@
+----------------------- AWS Demo
+
+#!/bin/sh
+curl -L https://us-west-2-aws-training.s3.amazonaws.com/awsu-spl/spl03-working-elb/static/bootstrap-elb.sh | sh
+
+yum install wget
+
+yum install unzip
+
+wget https://us-west-2-aws-training.s3.amazonaws.com/awsu-spl/spl03-working-elb/static/examplefiles-elb.zip
+unzip examplefiles-elb.zip
+
+db name
+drupaltutorial
+username
+drupaltutorial
+password
+drupaltutorial
+
+sudo yum update -y
+sudo yum install -y httpd24 php56 mysql55-server php56-mysqlnd php56-mbstring php56-gd php56-opcache
+sudo service httpd start
+sudo chkconfig httpd on
+
+https://www.drupal.org/project/drupal
+
+wget http://ftp.drupal.org/files/projects/drupal-7.54.tar.gz
+tar -xzvf drupal-7.54.tar.gz
+
+cd drupal-7.54/
+mkdir sites/default/files
+
+cp sites/default/default.settings.php sites/default/settings.php
+
+sudo rsync -avh . /var/www/html/
+
+sudo chown -R apache /var/www
+
+sudo vim /etc/httpd/conf/httpd.conf
+
+#!/bin/bash
+yum update -y
+service httpd start
+chkconfig httpd on
+
+----------------------------------Jenkins
+
+1 cd /opt
+2 wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
+3 echo "deb http://pkg.jenkins-ci.org/debian binary/" | sudo tee -a /etc/apt/sources.list.d/jenkins.list
+4 sudo apt-get update
+5 sudo apt-get install jenkins
+6 java -version
+7 service jenkins start
+8 ps -ef |grep jenkins
+
+http://www.bogotobogo.com/DevOps/Jenkins/Jenkins_Adding_Job_and_Build.php
+
+http://www.bogotobogo.com/DevOps/Jenkins/Jenkins_Git_Github.php
+
+http://aws.amazon.com/whitepapers
+
+https://github.com/bogo-devops/game-of-life
+
+39 sudo apt-get remove maven3
+40 sudo apt-get remove maven
+
+41 sudo add-apt-repository "deb http://ppa.launchpad.net/natecarlson/maven3/ubuntu precise main"
+42 sudo apt-get update
+
+43 sudo apt-get install maven3
+44 sudo ln -s /usr/share/maven3/bin/mvn /usr/bin/mvn
+
+export MAVEN_HOME=/usr/share/maven3
+
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+
+sudo apt-get install openjdk-8-jdk
+
+-------------------------Python
+
+python -m SimpleHTTPServer
+
+https://gist.github.com/jasonkeene/2ac5e552f2ba75d0295b#python-for-system-admins-operators
+
+http://collabedit.com/9v4ph
+
+24 yum install wget
+25 wget https://bootstrap.pypa.io/get-pip.py
+
+yum install gcc libffi-devel python-devel openssl-devel
+
+python get-pip.py
+
+28 pip install requests
+29 pip install paramiko
+31 pip install paramiko
+34 pip install cryptography
+35 pip install paramiko
+101 pip install requests
+139 pip install fabric
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+# This is a Mock project for DevOps class
+
+# Python-Paramiko (Module)
+# SSH client online
+# Python-OS (Module) - create directory
+# This module hits a URL and check the status
+
+import paramiko
+import requests
+
+url = 'http://www.google.com'
+loc='/home/index.html'
+
+def google(url,loc):
+
+r=requests.get(url)
+output = r.content
+print r.status_code
+file=open(loc, 'a')
+o=r.status_code
+for output in r.iter_content():
+if o == 200:
+print "output is -----------", output
+file.write(output)
+else:
+print "Code Faulty"
+return
+
+def clt():
+ssh=paramiko.SSHClient()
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh.connect( 'localhost' , username='root', password='nikhil1989')
+ins, out, err = ssh.exec_command("mkdir /opt/google" )
+
+#e=err.read()
+'''
+if e is not None:
+return "Error"
+
+'''
+g = google(url,loc)
+print g
+cmd = "cat %s
+
+------------------------------------------------------Ansible
+
+yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+yum install ansible
+
+ansible all --sudo --ask-sudo-pass -m raw -a 'sudo yum update -y'
+
+http://docs.ansible.com/ansible/modules.html
+
+ansible all -m shell -a 'echo $TERM' --ask-pass
+
+mkdir -p /opt/ansibletutorial/
+
+vi conditionaldemo.yml
+
+http://collabedit.com/9v4ph
+
+http://collabedit.com/rhg5m
+
+/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.131-2.6.9.0.el7_3.x86_64/jre/
+
+----------------------Chef-----------------------------------------------------------
+
+curl -L http://www.chef.io/chef/install.sh | sudo bash
+
+knife --version
+
+knife client list
+
+knife bootstrap--sudo -x chef -P chef -N "node1"
+
+http://collabedit.com/dk3bg
+
+http://collabedit.com/dk3bg
+
+------------------------------------------Docker-----------------------------------------------------------------
+
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+sudo apt-get install docker-ce
+
+http://docker-k8s-lab.readthedocs.io/en/latest/docker/bridged-network.html#network-namespace
+
+docker run --rm ubuntu ping google.com
+
+apt-get install iputils-ping
+
+docker run --rm ubuntu /bin/bash -c "apt-get update -y
+
+------------------------------------------Docker-----------------------------------------------------------------
+
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+sudo apt-get install docker-ce
+
+http://docker-k8s-lab.readthedocs.io/en/latest/docker/bridged-network.html#network-namespace
+
+docker run --rm ubuntu ping google.com
+
+apt-get install iputils-ping
+
+docker run --rm ubuntu /bin/bash -c "apt-get update -y && apt-get install iputils-ping -y && ping google.com"
+
+docker run -d --name test1 busybox sh -c "while true;do sleep 3600;done"
+
+docker run -d --name test2 busybox sh -c "while true;do sleep 3600;done"
+
+docker exec -it /bin/sh
+
+docker rm $(docker ps -aq --filter "status=exited")
+
+---Hello World Application
+
+1. Foreground
+
+docker run ubuntu:14.04 /bin/echo 'Hello world'
+
+2. Background
+
+docker run -t -i ubuntu:14.04 /bin/bash
+
+3.Daemon Mode
+
+docker run -d ubuntu:14.04 /bin/sh -c "while true; do echo hello world; sleep 1; done"
+
+docker logs <>
+
+Nginx Proxy
+
+docker run --name my-nginx-1 -p 8000:80 -d nginx
+
+Building your own container
+
+FROM nginx
+COPY content /usr/share/nginx/html
+
+docker build -t my-nginx-image-1 .
+
+docker run --name test-mysql -e MYSQL_ROOT_PASSWORD=password -d mysql:latest
+
+docker run --name test-wordpress -p 9200:80 --link test-mysql:mysql -d wordpress
+
+https://www.digitalocean.com/community/tutorials/how-to-share-data-between-the-docker-container-and-the-host
+
+-------------------Docker Compose
+
+curl -L https://github.com/docker/compose/releases/download/1.12.0/docker-compose-'uname -s'-'uname -m' > /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+https://docs.docker.com/compose/install/
+
+https://github.com/maheshkharwadkar/example-voting-app
+
+------------------------------------------Grafana
+
+wget http://influxdb.s3.amazonaws.com/influxdb_0.9.3_amd64.deb
+sudo dpkg -i influxdb_0.9.3_amd64.deb
+sudo /etc/init.d/influxdb start
+$ /opt/influxdb/influx -version
+http://localhost:8083
+
+numOrders,site="www.testsite.com",currency="GBP",value=15.50
+
+curl -G 'http://localhost:8086/query?pretty=true' --data-urlencode "db=db1" --data-urlencode "q=select * from numOrders"
+
+Using Rest API
+Create DB
+curl -G http://localhost:8086/query --data-urlencode "q=CREATE DATABASE events"
+
+Add data to db
+
+curl -i -XPOST 'http://localhost:8086/write?db=events' --data-binary 'deployment,deployer=mduffy,app=test_app,version="1.1",environment="test" value="sucess"'
+
+Query the data
+curl -G 'http://localhost:8086/query?pretty=true' --data-urlencode "db=events" --data-urlencode "q=SELECT * FROM deployment WHERE deployer='mduffy'"
+
+----------------Telegraf
+
+wget http://get.influxdb.org/telegraf/telegraf_0.1.8_amd64.deb
+sudo dpkg -i telegraf_0.1.8_amd64.deb
+
+curl -G http://localhost:8086/query --data-urlencode "q=CREATE DATABASE telegraf"
+
+/etc/opt/telegraf/telegraf.conf
+
+wget https://grafanarel.s3.amazonaws.com/builds/grafana_2.1.3_amd64.deb
+
+--Graphan Prereq
+sudo apt-get install -y adduser libfontconfig
+
+---Install Grafana
+
+sudo dpkg -i grafana_2.1.3_amd64.deb
+
+----Start Grafana
+sudo service grafana-server start
+
+-------------------------------------ELK Demo
+
+https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-elk-stack-on-centos-7
+
+http://collabedit.com/6ttvs
+
+---------------------Puppet------------------------
+
+sudo rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-el-7.noarch.rpm
+
+sudo yum install puppetserver
+
+---Install Puppet Agent
+
+sudo yum install puppet
+
+puppet master --verbose --no-daemonize
+
+on client
+
+puppet agent --server=ip-172-31-21-243.us-west-2.compute.internal --no-daemonize --verbose --onetime
+
+--------------Clent Signing and certificate Creation
+
+<< Enable 8140 port in security group>>>
+
+1. start Puppet server
+
+puppet master --verbose --no-daemonize
+
+2. Run Puppet Agent for creation of csr
+
+puppet agent --server=ip-172-31-21-243.us-west-2.compute.internal --no-daemonize --verbose --onetime
+
+3. Stop server
+
+ctrl+c
+
+4. On server 
+
+puppet cert sign ip-172-31-37-71.us-west-2.compute.internal
+
+5. Start Puppet Server
+
+puppet master --verbose --no-daemonize
+
+6. Check on agent
+
+puppet agent --server=ip-172-31-21-243.us-west-2.compute.internal --no-daemonize --verbose --onetime
+
+*****************Error
+
+Info: Creating a new SSL key for ip-172-31-47-30.us-west-2.compute.internal
+Error: Could not request certificate: Connection refused - connect(2)
+Exiting; failed to retrieve certificate and waitforcert is disabled
+
+Agent
+
+13 cd /var/lib/puppet/
+14 ls -ltr
+15 mv ssl ssl_old
+16 hostname
+17 puppet agent --server=ip-172-31-35-61.us-west-2.compute.internal --no-daemonize --verbose --onetime
+
+vi site.pp
+import 'nodes.pp'
+
+$puppetmaster = 'ip-172-31-37-72.us-west-2.compute.internal'
+
+2.nodes.pp
+
+node 'ip-172-31-37-71.us-west-2.compute.internal' {
+file { 'motd':
+path => '/etc/motd',
+content => 'Tomorrow is another day',
+}
+}
+
+package { 'httpd':
+ensure => present,
+}
+service { 'httpd':
+ensure => running,
+enable => true,
+}
+
+puppet master --verbose --no-daemonize
+
+puppet agent --server=ip-172-31-21-243.us-west-2.compute.internal --no-daemonize --verbose --onetime
+
+---------------Installation using existing module
+
+sudo puppet module install puppetlabs-apache
+
+sudo puppet module install puppetlabs-mysql
+
+Changes in site.pp
+
+node default { }
+
+node 'lamp-1' {
+
+class { 'apache': # use the "apache" module
+default_vhost => false, # don't use the default vhost
+default_mods => false, # don't load default mods
+mpm_module => 'prefork', # use the "prefork" mpm_module
+}
+include apache::mod::php # include mod php
+apache::vhost { 'example.com': # create a vhost called "example.com"
+port => '80', # use port 80
+docroot => '/var/www/html', # set the docroot to the /var/www/html
+}
+
+class { 'mysql::server':
+root_password => 'password',
+}
+
+file { 'info.php': # file resource name
+path => '/var/www/html/info.php', # destination path
+ensure => file,
+require => Class['apache'], # require apache class be used
+source => 'puppet:///modules/apache/info.php', # specify location of file to be copied
+}
+}
+
+cd /etc/puppet/modules/apache/files
+
+vi info.php
+
+phpinfo();
+?>
