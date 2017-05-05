@@ -1,0 +1,233 @@
+package "httpd" do
+  action :install
+end
+service "httpd" do
+ action [ :enable, :start ]
+end
+cookbook_file "/var/www/html/index.html" do
+  source "index.html"
+  mode "0644"
+end
+
+<html>
+<body>
+<h1>Hello, world!</h1>
+</body>
+</html>
+
+template "/etc/motd" do
+  source "motd.erb"
+  mode "0644"
+end
+
+
+
+This server is property of <%= node["motd"]["company"] %>
+<% if node["pci"]["in_scope"] -%>
+This server is in-scope for PCI compliance
+<% end -%>
+
+----------------Attributes Templates And Variables
+default["apache"]["sites"]["clowns"] = { "port" => 80 }
+default["apache"]["sites"]["bears"] = { "port" => 81 }
+
+# Disable the default 
+execute "mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf.disabled" do
+  only_if do
+    File.exist?("/etc/httpd/conf.d/welcome.conf")
+  end
+  notifies :restart, "service[httpd]"
+end
+
+# iterates over the apache sites
+node["apache"]["sites"].each do |site_name,site_data|
+#set the document root
+  document_root = "/srv/apache/#{site_name}"
+# Add template for Apache Virtual host configuration
+  template "/etc/httpd/conf.d/#{site_name}.conf" do
+    source "custom.erb"
+    mode "0777"
+    variables(
+      :document_root => document_root,
+      :port => site_data["port"]
+    )
+    notifies :restart, "service[httpd]"
+  end
+# Add a directory resource to create the document_root
+  directory document_root do
+    mode = "0755"
+    recursive true
+  end
+# Add a template resource for the virtual host's index.html
+  template "#{document_root}/index.html" do
+    source "index.html.erb"
+    mode "0777"
+    variables(
+      :site_name => site_name,
+      :port => site_data["port"]
+    )
+  end
+end
+
+service "httpd" do
+ action [ :enable, :start ]
+end
+
+<% if @port != 80 -%>
+  Listen <%= @port %>
+<% end -%>
+
+<VirtualHost *:<%= @port %>>
+  ServerAdmin webMaster@localhost
+
+  DocumentRoot <%= @document_root %>
+  <Directory />
+   Options FollowSymLinks
+   AllowOverride None
+  </Directory>
+  <Directory <%= @document_root %>>
+    Options Indexes FollowSymLinks MultiViews
+    AllowOverride None
+    Require all granted
+  </Directory>
+</VirtualHost>
+
+<html>
+  <body>
+    <h1>Welcome to <%= node["motd"]["company"] %></h1>
+    <h2>We love <%= @site_name %></h2>
+    <%= node["ipaddress"] %>:<%= @port %>
+  </body>
+</html>
+
+https://github.com/jhotta/chef-fundamentals-ja/blob/master/slides/just-enough-ruby-for-chef/01_slide.md
+
+setenforce 0
+service httpd restart
+
+{
+"id": "bobo",
+"comment": "Bobo T. Clown",
+"uid": 2000,
+"gid": 0,
+"home": "/home/bobo",
+"shell": "/bin/bash"
+}
+
+{
+"id": "frank",
+"comment": "Frank Belson",
+"uid": 2001,
+"gid": 0,
+"home": "/home/frank",
+"shell": "/bin/bash"
+}
+
+knife data_bag from file users bobo.json
+knife data_bag from file users frank.json
+
+{
+  "id": "clowns",
+  "gid": 3000,
+  "members": ["bobo", "frank"]
+}
+
+https://api.chef.io/organizations/flopp/data_bags/users
+
+search("users", "*:*").each do |user_data|
+  user user_data["id"] do
+    comment user_data["comment"]
+    uid user_data["uid"]
+    gid user_data["gid"]
+    home user_data["home"]
+    shell user_data["shell"]
+  end
+end
+
+include_recipe "users::groups"
+
+
+
+search("groups", "*:*").each do |group_data|
+  group group_data["id"] do
+    gid group_data["gid"]
+    members group_data["members"]
+  end
+end
+  
+  
+name "webserver"
+description "Web Server"
+run_list "recipe[apache]"
+default_attributes({
+  "apache" => {
+    "sites" => {
+      "admin" => {
+        "port" => 8000
+}
+}
+}
+})
+
+
+name "dev"
+description "For developers!"
+cookbook "apache", "= 0.2.0"
+
+
+
+cookbooks/apache/attributes/default.rb
+default["apache"]["indexfile"] = "index1.html"
+
+cookbooks/apache/files/default/index1.html
+
+<html>
+<body>
+<h1>Hello, world!</h1>
+<h2>This is index1.html</h2>
+<p>We configured this in the attributes file</p>
+</body>
+</html>
+
+source node["apache"]["indexfile"]
+
+template "/etc/motd" do
+  source "motd.erb"
+  mode "0644"
+end
+
+This server is property of <%= node["motd"]["company"] %>
+<% if node["pci"]["in_scope"] -%>
+This server is in-scope for PCI compliance
+<% end -%>
+
+search("node","platform:redhat").each do |server|
+  log "The CentOS servers in your organization have the following
+FQDN/IP Addresses:- #{server["fqdn"]}/#{server["ipaddress"]}"
+end
+
+knife node run_list add Node1 'recipe[apache::ip-logger]'
+
+
+{
+  "id": "bobo",
+  "comment": "Bobo T. Clown",
+  "uid": 2000,
+  "gid": 0,
+  "home": "/home/bobo",
+  "shell": "/bin/bash"
+}
+
+knife data_bag from file users bobo.json
+
+
+{
+  "id": "frank",
+  "comment": "Frank Belson",
+  "uid": 2001,
+  "gid": 0,
+  "home": "/home/frank",
+  "shell": "/bin/bash"
+}
+
+knife data_bag from file users frank.json
